@@ -208,16 +208,16 @@ bool fileExists(const string& name) { // Helper to verify file exists
 string getCheckedSpritePath(int charType, string action, int frame) { // Builds and validates asset path
     string path; // Variable for final string
     if (action == "IDLE") { // If idle
-        if (charType == 0) path = "kim dokja idol.jpg"; // Path for Dokja idle
-        else path = "han soyoung IDOL.jpg"; // Path for Soyoung idle
+        if (charType == 0) path = "assets/kim dokja idol.jpg"; // Path for Dokja idle
+        else path = "assets/han soyoung IDOL.jpg"; // Path for Soyoung idle
     } else { // If moving or jumping
         string name = (charType == 0) ? "kim_dokja" : "han_soyoung"; // Set name prefix
-        path = name + "_" + action + "_frame" + to_string(frame) + ".jpg"; // Concatenate full path
+        path = "assets/" + name + "_" + action + "_frame" + to_string(frame) + ".jpg"; // Concatenate full path
     } // Ends if
     
     if (!fileExists(path)) { // Validate existence
-        if (charType == 0) return "kim dokja idol.jpg"; // Fallback Dokja
-        else return "han soyoung IDOL.jpg"; // Fallback Soyoung
+        if (charType == 0) return "assets/kim dokja idol.jpg"; // Fallback Dokja
+        else return "assets/han soyoung IDOL.jpg"; // Fallback Soyoung
     } // Ends if
     return path; // Return safe path
 } // Ends function
