@@ -826,7 +826,7 @@ void drawMenu() { // Title screen loop state
     if (up && !wasUp) { menuSel--; if (menuSel < 0) menuSel = 2; } // Shift selector
     if (down && !wasDown) { menuSel++; if (menuSel > 2) menuSel = 0; } // Shift selector
     if (enter && !wasEnterMenu) { // Commit action
-        if (menuSel == 0) { currentLevel = 1; initLevel(1); initPlayer(1); gState = ST_CHARSEL; } // Advance to char screen
+        if (menuSel == 0) { currentLevel = 1; initLevel(1); initPlayer(1); gState = ST_CHARSEL; wasEnterChar = true; } // Advance to char screen, block bleed
         else if (menuSel == 1) { gState = ST_LEVELSEL; wasEnterLevelSel = true; } // Block input bleed
         else exit(0); // Exit desktop
     } // Ends if
@@ -890,10 +890,11 @@ void drawLevelSel() { // Pick level screen loop state
     if (up && !wasUp) { levelSel -= 5; if (levelSel < 1) levelSel += 10; } // Shift
     if (down && !wasDown) { levelSel += 5; if (levelSel > 10) levelSel -= 10; } // Shift
     
-    if (enter && !wasEnterLevelSel) { // Commit
+    if (enter && !wasEnterLevelSel) { // Only fire once ENTER was released and re-pressed
         currentLevel = levelSel; // Set to selected
         initLevel(currentLevel); // Load stage
         initPlayer(currentLevel); // Reset bounds
+        wasEnterChar = true; // Pre-block char screen so it doesn't fire instantly too
         gState = ST_CHARSEL; // Route to char selection next!
     } // Ends if
     
@@ -936,9 +937,9 @@ void drawCharSel() { // Pick screen loop state
     
     if (left && !wasLeft) charSel = 0; // Shift left
     if (right && !wasRight) charSel = 1; // Shift right
-    if (enter && !wasEnterChar) { // Commit
+    if (enter && !wasEnterChar) { // Commit only if ENTER was freshly pressed
         player.charType = charSel; // Assign ID
-        currentLevel = 1; // Hardcode starting block
+        currentLevel = (gState == ST_CHARSEL) ? currentLevel : 1; // Preserve level if from level select
         initLevel(currentLevel); // Load stage
         initPlayer(currentLevel); // Reset player bounds
         gState = ST_PLAY; // Change state to play mode
